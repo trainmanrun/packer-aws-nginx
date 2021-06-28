@@ -9,7 +9,7 @@ packer {
 
 variable "ami_prefix" {
   type    = string
-  default = "learn-packer-bionic-aws"
+  default = "learn-packer-aws"
 }
 
 locals {
@@ -17,13 +17,13 @@ locals {
 }
 
 
-source "amazon-ebs" "ubuntu" {
-  ami_name      = "${var.ami_prefix}-${local.timestamp}"
+source "amazon-ebs" "ubuntu-focal" {
+  ami_name      = "${var.ami_prefix}-focal-${local.timestamp}"
   instance_type = "t2.micro"
   region        = "ap-southeast-2"
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/*ubuntu-bionic-18.04-amd64-server-*"
+      name                = "ubuntu/images/*ubuntu-focal-20.04-amd64-server-*"
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
@@ -35,7 +35,7 @@ source "amazon-ebs" "ubuntu" {
 
 build {
   sources = [
-    "source.amazon-ebs.ubuntu"
+    "source.amazon-ebs.ubuntu-focal"
   ]
 
   provisioner "shell" {
@@ -50,5 +50,7 @@ build {
       "echo \"FOO is $FOO\" > example.txt",
     ]
   }
+  post-processor "vagrant" {}
+
 
 }
