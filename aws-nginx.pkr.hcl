@@ -7,8 +7,18 @@ packer {
   }
 }
 
+variable "ami_prefix" {
+  type    = string
+  default = "learn-packer-bionic-aws"
+}
+
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+}
+
+
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "learn-packer-bionic-aws"
+  ami_name      = "${var.ami_prefix}-${local.timestamp}"
   instance_type = "t2.micro"
   region        = "ap-southeast-2"
   source_ami_filter {
